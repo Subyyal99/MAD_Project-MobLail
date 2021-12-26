@@ -60,7 +60,7 @@ secureTextEntry={true} />
 <TouchableOpacity
 style={styles.tch}
   //onPress = {() => passchk(getuser, getpass, users)}
-  //onPress = {() => navigation.navigate("Sign")}
+  onPress = {() => navigation.navigate("Home")}
   >
 <Text style={styles.logintxt}>
 LOGIN

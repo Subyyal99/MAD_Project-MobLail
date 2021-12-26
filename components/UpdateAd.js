@@ -2,15 +2,13 @@ import  React, {useState}  from 'react';
 import {
   View,
   TextInput,
-  StyleSheet, TouchableOpacity,  SafeAreaView, Image, StatusBar, ScrollView,CheckBox, 
+  StyleSheet, TouchableOpacity,  SafeAreaView, Image, StatusBar, ScrollView,CheckBox, Picker
 } from 'react-native'
 import { Text, Card, Button, Icon } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
-import {Picker} from '@react-native-picker/picker';
 
 
-
-const PostAdScreen = ({navigation}) => {
+const UpdateAdScreen = ({navigation}) => {
   const [image, setimage] = useState();
    const [isSelected, setSelect] = useState('');
   var defaultimg = "https://www.gizmochina.com/wp-content/uploads/2018/02/Samsung-Galaxy-S8-Plus-G955F_2-500x500.jpg"
@@ -86,7 +84,7 @@ const PostAdScreen = ({navigation}) => {
         />
         <Card.Divider />
         <TouchableOpacity style={styles.postbtn}>
-        <Text style={styles.imgtxt}>POST</Text>
+        <Text style={styles.imgtxt}>UPDATE</Text>
         </TouchableOpacity>
         
 
@@ -176,4 +174,4 @@ alignSelf: "center",
   },
 });
 
-export default PostAdScreen;
+export default UpdateAdScreen;
