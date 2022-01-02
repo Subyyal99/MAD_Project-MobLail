@@ -7,10 +7,55 @@ import {
 import { Text, Card, Button, Icon } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 
+import { initializeApp } from "firebase/app";
 
-const UpdateAdScreen = ({navigation}) => {
+
+const FIREBASE_API_ENDPOINT = 'https://fir-2bf8d-default-rtdb.firebaseio.com/';
+
+
+
+const UpdateAdScreen= ({navigation,route}) => {
+  console.log("Plis"+route.params.p)
   const [image, setimage] = useState();
-   const [isSelected, setSelect] = useState('');
+  const [price, setPrice] =useState(route.params.p);
+  const [brand, setBrand] =useState(route.params.b);
+  const [model, setModel] =useState(route.params.m);
+  const [detail, setDetail] =useState(route.params.d);
+  const [isSelected, setSelect] = useState('');
+  const [number, setNumber] =useState(route.params.c);
+  const [img, setimg] = useState();
+  
+
+const [getD,setD] = useState();
+  const getData = async () => {
+    const response = await fetch(`${FIREBASE_API_ENDPOINT}/tasks.json`);
+    const data = await response.json();
+    console.log(data);
+  };
+  console.log(price,brand,model+"i is")
+  const updateData = () => {
+
+    const id = route.params.i;
+    console.log('I am update')
+   console.log(id)
+    var requestOptions = {
+      method: 'PATCH',
+      body: JSON.stringify({
+        Price: price,
+        Brand: brand,
+        Model: model,
+        Details: detail,
+        Contact: number, 
+      }),
+    };
+
+    fetch(`${FIREBASE_API_ENDPOINT}/tasks/${id}.json`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => console.log(result))
+      .catch((error) => console.log('error', error));
+  };
+
+
   var defaultimg = "https://www.gizmochina.com/wp-content/uploads/2018/02/Samsung-Galaxy-S8-Plus-G955F_2-500x500.jpg"
   let openImagePickerAsync = async () => {
     let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -25,7 +70,7 @@ const UpdateAdScreen = ({navigation}) => {
    
   }
   return (
-    <>
+  
         <SafeAreaView style={styles.container}>
         <ScrollView>
           <Card>
@@ -48,24 +93,30 @@ const UpdateAdScreen = ({navigation}) => {
       <Text style = {styles.txt}> Price: </Text>
       <TextInput
           style={styles.input}
-          placeholder=' 50,000'
           keyboardType = "number-pad"
+          value={price}
+          onChangeText = {(x)=>setPrice(x)}
         />
+
         <Text style = {styles.txt}> Company: </Text>
       <TextInput
           style={styles.input}
-          placeholder=' Samsung'
+          value={brand}
+          onChangeText = {(x)=>setBrand(x)}
         />
+
         <Text style = {styles.txt}> Model: </Text>
       <TextInput
           style={styles.input}
-          placeholder=' 2021'
-          
+          value={model}
+          onChangeText = {(x)=>setModel(x)}
         /><Text style = {styles.txt}> Description: </Text>
+      
       <TextInput
           style={styles.input}
           multiline={true}
-          placeholder=' Glass front (Gorilla Glass 5), glass back (Gorilla Glass 5), aluminum frame SIM	Single SIM (Nano-SIM) '
+          value={detail}
+          onChangeText = {(x)=>setDetail(x)}
         />
         <Text style = {styles.txt}> Condition: </Text>
         
@@ -76,14 +127,17 @@ const UpdateAdScreen = ({navigation}) => {
         <Picker.Item label="Used" value="Used" />
         <Picker.Item label="New" value="New" />
       </Picker>
+
         <Text style = {styles.txt}> Contact Number: </Text>
       <TextInput
           style={styles.input}
-          placeholder=' 0312-1234567'
           keyboardType = "number-pad"
+          value={number}
+          onChangeText = {(x)=>setNumber(x)}
         />
         <Card.Divider />
-        <TouchableOpacity style={styles.postbtn}>
+        <TouchableOpacity style={styles.postbtn}
+        onPress ={()=>updateData()}>
         <Text style={styles.imgtxt}>UPDATE</Text>
         </TouchableOpacity>
         
@@ -93,7 +147,6 @@ const UpdateAdScreen = ({navigation}) => {
         
         </SafeAreaView>
       
-    </>
   );
 };
 

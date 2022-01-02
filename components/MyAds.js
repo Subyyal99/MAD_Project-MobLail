@@ -5,17 +5,21 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Image,
-  ScrollView, FlatList
+  ScrollView,
+  FlatList,
+  Objects
 } from 'react-native';
 
 import { Text, Card, Button, Icon } from 'react-native-elements';
 import { NavigationContainer } from '@react-navigation/native';
+
+
 import { initializeApp } from "firebase/app";
 
 
 const FIREBASE_API_ENDPOINT = 'https://fir-2bf8d-default-rtdb.firebaseio.com/';
 
-const MobileAds = ({navigation}) => {
+const MyAds = ({navigation}) => {
 const [products, setProducts] = React.useState();
 
 const getData = async () => {
@@ -27,15 +31,22 @@ const getData = async () => {
 
     for (let i = 0; i < keyValues.length; i++) {
       let key = keyValues[i];
+      console.log(key);
       let credential = {
         Brand: data[key].Brand,
         Price: data[key].Price,
         Model: data[key].Model,
         Details: data[key].Details,
-        Contact: data[key].Contact
+        Contact: data[key].Contact,
+        ID: key
       };
+
+     // console.log("Ider"+credential)
       arr.push(credential);
+      //arr.push(keyValues);
     }
+    console.log("KeyValues"+keyValues);
+    //console.log("data"+data);
     console.log(arr);
     setProducts(arr)
   };
@@ -43,16 +54,11 @@ const getData = async () => {
   React.useEffect(() => {
     getData();
   }, [setProducts]);
-  return (
-    
-    <View style = {{flex:1, }}>
-    <View style={{alignItems:'center', flexDirection:'row',
-     alignSelf: 'center'}}>
-    <TextInput style={styles.search} placeholder="  Search"></TextInput>
-    <Icon name="search"/>
-    </View>
-      <ScrollView>
-        <View style={styles.container}>
+
+  
+  
+ return (
+    <View style = {{flex:1, alignSelf: 'center'}}>
       <FlatList style={styles.showList}
       refreshing={false}
       onRefresh={getData}
@@ -61,7 +67,7 @@ const getData = async () => {
       renderItem={({item,index})=>
       <TouchableOpacity 
       onPress={()=>
-        navigation.navigate("Details", item)
+        navigation.navigate("EditAd", item)
         }>
             <Card containerStyle={styles.box}>
               <Card.Image
@@ -78,47 +84,23 @@ const getData = async () => {
       </TouchableOpacity>
         }
         />
-        </View>
-      </ScrollView>
-      </View>
-    
+       
+    </View>
+  
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1, 
-    
-  },
-   button: {
-    borderRadius: 10,
-    marginBottom: '5%',
-    shadowColor: '#303838',
-    shadowOffset: { width: 0, height: 5 },
-    shadowRadius: 10,
-    shadowOpacity: 0.35,
-    width: '100%',
-    height: '15%',
-    
-  },
+ 
   box: {
+    flex:1,
     backgroundColor:'lightgray',
+    width:"90%"
     
   },
- search: {
-      //alignContent:'center',
-      borderColor:'black',
-      borderWidth:1,
-      width: "80%",
-      borderRadius:10,
-      //marginLeft:'10%',
-      marginTop: '5%',
-      marginBottom: '5%',
-      
-    
- }
+ 
   
  
 });
 
-export default MobileAds;
+export  default MyAds;

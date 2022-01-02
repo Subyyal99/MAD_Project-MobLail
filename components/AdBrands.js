@@ -6,40 +6,12 @@ import {
 } from 'react-native'
 import { Text, Card, Button, Icon } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
-import { initializeApp } from "firebase/app";
 
 
-const FIREBASE_API_ENDPOINT = 'https://fir-2bf8d-default-rtdb.firebaseio.com/';
-
-
-const EditProfileScreen = ({navigation, route}) => {
-  const [username, setusername] = useState(route.params.name);
-  const [email, setemail] = useState(route.params.Email);
-  const [phone, setphone] = useState(route.params.contact);
+const adBrand = ({navigation}) => {
   const [image, setimage] = useState();
-   const [isSelected, setSelect] = useState('');
-   const updateData = () => {
-
-    const id = '-MsKK5Sz1qD36HWGyYb1';
-    console.log('I am update')
-   console.log(id)
-    var requestOptions = {
-      method: 'PATCH',
-      body: JSON.stringify({
-        UserName: username,
-        Email: email,
-        Contact: phone,
-      }),
-    };
-
-    fetch(`${FIREBASE_API_ENDPOINT}/User/${id}.json`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => console.log(result))
-      .catch((error) => console.log('error', error));
-  }; 
- 
-
-  var defaultimg = "https://hairmanz.com/wp-content/uploads/2020/04/man-bun-the-best-guide-for-men-mainart.jpg"
+   const [isSelected, setSelect] = useState();
+  var defaultimg = "https://qph.fs.quoracdn.net/main-qimg-32a38eb3353bfb125206cc39a0b7794e-lq"
   let openImagePickerAsync = async () => {
     let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -50,14 +22,13 @@ const EditProfileScreen = ({navigation, route}) => {
     let pickerResult = await ImagePicker.launchImageLibraryAsync();
     setimage(pickerResult.uri)
     console.log(pickerResult);
-
-    
+   
   }
   return (
-    <>
+    
         <SafeAreaView style={styles.container}>
           <Card>
-            <Card.Title>PERSONAL INFORMATION</Card.Title>
+            <Card.Title>Add New Brand</Card.Title>
             <Card.Divider />
             <Card.Image
               style={styles.logo}
@@ -65,47 +36,41 @@ const EditProfileScreen = ({navigation, route}) => {
       <TouchableOpacity onPress={openImagePickerAsync} style={styles.tch}>
       <Text style={styles.imgtxt}>Choose Image</Text>
       </TouchableOpacity>
-            
+      <Card.Divider />
       <Text style = {{
               fontSize:18, fontWeight:'bold', 
               alignSelf: "center",
-              margin:10}}> 
+              marginTop:10
+              ,marginBottom:7}}> 
 
-      PROFILE PICTURE</Text>
-      <Card.Divider />
-      <Text style= {styles.heading}>Name</Text>
+      Brand Details</Text>
+      
+      <Text style= {styles.heading}>Brand Name</Text>
       <TextInput
           style={styles.input}
-          placeholder='  Subyyal Siddiqui'
-          onChangeText={(x)=> setusername(x)}
-          value={username}
+          placeholder='  Apple'
         />
-        <Text style= {styles.heading}>Email</Text>
+        <Text style= {styles.heading}>Brand Email</Text>
         <TextInput
           style={styles.input}
-          placeholder='  subyyal1234@gmail.com'
-          value={email}
-          onChangeText={(x)=>setemail(x)}
+          placeholder='  example@apple.com'
         />            
-        <Text style= {styles.heading}>Mobile Number </Text>
+        <Text style= {styles.heading}>Brand Mobile Number </Text>
         <TextInput
           style={styles.input}
-          placeholder='  0312-1234567'
+          placeholder='  0312-XXXXXXX'
           keyboardType = "number-pad"
-          value={phone}
-          onChangeText={(x)=>setphone(x)}
         />
-        <Card.Divider />
+        <Card.Divider style={{marginTop:30}} />
         <TouchableOpacity 
-        onPress = {() => {navigation.navigate("Profile"); updateData();}}
-        //onPress={()=>updateData()}
+        onPress = {() => navigation.navigate("Profile")}
         style={styles.tch2}>
         <Text style={styles.btntxt}>SAVE</Text>
         </TouchableOpacity>
         </Card>
         </SafeAreaView>
       
-    </>
+    
   );
 };
 
@@ -114,22 +79,15 @@ const styles = StyleSheet.create({
     flex: 1,
     //marginTop:"10%"
   },
-  
-  txt: {
-    fontSize: 15,
-    fontWeight: "bold",
-    marginBottom: 10,
-    paddingLeft:5
 
-
-  },
   input: {
  borderColor: '#bf4137', 
  borderWidth: 1,  
  marginBottom: 10,
  borderRadius: 14,
  fontSize: 18,
- fontWeight: '500'
+ fontWeight: '500',
+ marginTop:2
   },
   
    tch2 : {
@@ -166,7 +124,8 @@ alignSelf: "center",
   borderColor: '#bf4137',
   borderRadius : 15,
   borderWidth : 2,
-   marginTop: 20,
+   marginTop: '10%',
+   marginBottom: '4%',
   width: "50%",
   backgroundColor: "black",
   padding:5,
@@ -189,4 +148,4 @@ alignSelf: "center",
   },
 });
 
-export default EditProfileScreen;
+export default adBrand;

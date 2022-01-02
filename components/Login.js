@@ -1,118 +1,173 @@
-import  React, {useState}  from 'react';
-import { View, Text, Button, TextInput, StyleSheet, 
-TouchableOpacity,  SafeAreaView} from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  Button,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  SafeAreaView,
+  Image,
+  Switch,
+  ScrollView,
+} from 'react-native';
+import { AsyncStorage } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Input } from 'react-native-elements';
+import { initializeApp } from 'firebase/app';
 
-const LoginScreen = ({navigation, event}) => {
-const passchk = (name, pas, list) => {
-  var flag = 0;
-  for(var i =0; i<= list.length; i++){
-    if(list[i].name == name && list[i].pass == pas){
-      flag = 1;
-      break;
-    }
-  }
-  if(flag === 1){
-   event(false)
-    navigation.navigate("Home");
-  }
-  else{
-    console.log("in else")
-      alert("Wrong Credential! \nEnter Again")
-  }
+const FIREBASE_API_ENDPOINT = 'https://fir-2bf8d-default-rtdb.firebaseio.com/';
 
-}  
-  const [getuser, setuser] = useState("");
+const LoginScreen = ({ navigation, event }) => {
+  const [users, setusers] = React.useState([]);
+  const [getname, setname] = useState("");
   const [getpass, setpass] = useState("");
 
-  const users = [{name: "subyyal", pass: "12345"},
-  {name: "sani", pass: "12345"},{name: "zimal", pass: "12345"},]
+  const getData = async () => {
+    const response = await fetch(`${FIREBASE_API_ENDPOINT}/User.json`);
+    const data = await response.json();
+    
+    var keyValues = Object.keys(data);
+let arr=[]
+    for (let i = 0; i < keyValues.length; i++) {
+      let key = keyValues[i];
+      console.log('presentuserkey' + key);
+      let credential = {
+        admin: data[key].Admin,
+        username: data[key].UserName,
+        password: data[key].Password,
+        email: data[key].Email,
+        contact: data[key].Contact,
+        id: key,
+      };
+      arr.push(credential);
+    }
+    setusers(arr)
+   
+  };
+
+  React.useEffect(() => {
+    getData();
+  }, []);
+
+  const passchk = () => {
+    var flag = 0;
+    for (let i in users) {
+      console.log(users[i])
+      if (users[i].admin==='1') {
+        if (users[i].username === getname && users[i].password === getpass ) {
+          flag = 2;
+          break;
+        }else{
+        
+         
+        }
+      } else {
+        console.log(users[i].password)
+        console.log(getpass)
+        if (users[i].username === getname && users[i].password === getpass) {
+          console.log("Checking pass")
+          flag = 1;
+         
+        }else{
+          console.log("pass not matched")
+        
+        }
+      }
+    }
+    if (flag == 1) {
+      navigation.navigate('User');
+    }
+    else if (flag == 2) {
+      navigation.navigate('Admin');
+    } 
+    else {
+      
+      alert('Wrong Credential! \nEnter Again');
+    }
+  };
+
+  
   return (
+    <ScrollView>
+      <SafeAreaView style={styles.container}>
+        <Image style={styles.logo} source={require('../assets/Logo.jpeg')} />
 
-    <SafeAreaView style = {styles.container}>
-   <Input style={styles.Input}
-  placeholder='  Enter Your User Name'
-  onChangeText= {(x) => setuser(x)}
+        <Input
+          style={styles.Input}
+          placeholder="  Enter Your User Name"
+          onChangeText={setname}
+          value={getname}
+          leftIcon={<Icon name="user" size={24} color="black" />}
+        />
+        <Input
+          style={styles.Input}
+          placeholder="  Enter Your Password"
+          value={getpass}
+          onChangeText={setpass}
+          leftIcon={<Icon name="lock" size={24} color="black" />}
+          secureTextEntry={true}
+        />
 
-  value = {getuser}
-  leftIcon={
-    <Icon
-      name='user'
-      size={24}
-      color='black'
-    />
-  }
-/>
-<Input style={styles.Input}
- placeholder="  Enter Your Password"
-  value = {getpass}
-  onChangeText= {(x) => setpass(x)}
- leftIcon={
-    <Icon
-      name='lock'
-      size={24}
-      color='black'
-    /> 
- }
-secureTextEntry={true} />
+        <TouchableOpacity
+          style={styles.tch}
+          onPress={() => passchk()}
+          //onPress={() => navigation.navigate('Home')}
 
-<TouchableOpacity
-style={styles.tch}
-  //onPress = {() => passchk(getuser, getpass, users)}
-  onPress = {() => navigation.navigate("Home")}
-  >
-<Text style={styles.logintxt}>
-LOGIN
-</Text>
-</TouchableOpacity>
-<Text> Not have an account? </Text>
-<TouchableOpacity
-style={styles.tch}
-  //onPress = {() => passchk(getuser, getpass, users)}
-  onPress = {() => navigation.navigate("Sign")}>
-<Text style={styles.logintxt}>
-Create New Account
-</Text>
-</TouchableOpacity>
-
-
-    </SafeAreaView>
-  )
-}
-
+        >
+          <Text style={styles.logintxt}>LOGIN</Text>
+        </TouchableOpacity>
+        <Text> Not have an account? </Text>
+        <TouchableOpacity
+          style={styles.tch}
+          //onPress = {() => passchk(getuser, getpass, users)}
+          onPress={() => navigation.navigate('Sign')}>
+          <Text style={styles.logintxt}>Create New Account</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    </ScrollView>
+  );
+};
 
 const styles = StyleSheet.create({
-  container : {
+  container: {
     flex: 1,
-    paddingTop: "30%",
-    margin: 10
+    //paddingTop: "30%",
+    margin: 10,
   },
 
-  tch : {
-    alignItems: 'center', 
-alignSelf: "center",  
-  borderRadius : 15,
-  borderWidth : 2,
-  margin: 35,
-  width: "65%",
-  backgroundColor: "black",
-  padding:5,
+  tch: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    borderRadius: 15,
+    borderWidth: 2,
+    margin: 35,
+    width: '75%',
+    backgroundColor: 'black',
+    padding: 5,
     borderColor: '#bf4137',
-
-
   },
   logintxt: {
-    fontSize:25,
-     fontWeight: "bold",
-      color:"white"
-    
-  }, 
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: 'white',
+  },
   Input: {
-padding:0,
-borderRadius: 100
-  }
- 
+    padding: 0,
+    borderRadius: 100,
+  },
+  logo: {
+    borderColor: '#bf4137',
+    borderWidth: 1,
+    borderRadius: 50,
+    resizeMode: 'cover',
+    overflow: 'hidden',
+    height: 200,
+    width: 200,
+    alignSelf: 'center',
+    marginBottom: 35,
+    marginTop: 15,
+  },
 });
 
 export default LoginScreen;

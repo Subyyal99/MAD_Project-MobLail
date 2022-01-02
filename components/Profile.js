@@ -1,58 +1,110 @@
-import React from 'react';
-import { View, ScrollView, StyleSheet, Image, SafeAreaView, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  Image,
+  SafeAreaView,
+  TouchableOpacity,
+} from 'react-native';
 import { Text, Card, Button, Icon } from 'react-native-elements';
+import { initializeApp } from "firebase/app";
 
 
-const ProfileScreen = ({navigation}) => {
+const FIREBASE_API_ENDPOINT = 'https://fir-2bf8d-default-rtdb.firebaseio.com/';
+
+const ProfileScreen = ({ navigation }) => {
+
+  const [username, setusername] = useState();
+  const [email, setemail] = useState();
+  const [phone, setphone] = useState();
+
+  
+  const getData = async () => {
+    const response = await fetch(`${FIREBASE_API_ENDPOINT}/User.json`);
+    const data = await response.json();
+
+    var arr = [];
+   var keyValues = Object.keys(data);
+   console.log(keyValues)
+   const id = '-MsKK5Sz1qD36HWGyYb1';
+      let key = keyValues[id];
+      
+        setusername(data[id].UserName),
+        setemail(data[id].Email),
+        setphone(data[id].Contact);
+  };
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+        onPress={() => navigation.navigate('Login')}
+          style={{borderRadius: 100,
+            borderWidth: 2,
+            borderColor: '#bf4137',
+            backgroundColor: 'black',
+            padding: 5,
+            alignItems: 'center',
+            padding: 10,
+           }} >
+          <Text style={{ 
+          fontWeight: 'bold',
+          color: 'white',}}>
+            LOGOUT</Text></TouchableOpacity>
+      )
+    });
+  });
+
+  React.useEffect(() => {
+    getData();
+  }, []);
+
   return (
-    <>
-      
-        <SafeAreaView style={styles.container}>
-          
-          <Card>
-          
-            <Card.Title>PERSONAL INFORMATION</Card.Title>
-            <Card.Divider />
-            <Card.Image
-              style={{ padding: 0, resizeMode: 'contain', overflow: 'hidden' }}
-              source={{
-                uri:
-                  'https://hairmanz.com/wp-content/uploads/2020/04/man-bun-the-best-guide-for-men-mainart.jpg',
-              }}
-            />
-            
-            
-            <Text style = {{
-              fontSize:18, fontWeight:'bold', 
-              alignSelf: "center",
-              margin:10
-            
-            }}> 
-            PROFILE PICTURE</Text>
-             <Card.Divider />
-             <Text style= {styles.heading}>Name</Text>
-            <Text style = {styles.txt}>SUBYYAL SIDDIQUI </Text>
-            <Text style= {styles.heading}>Email</Text>
-            <Text style = {styles.txt}>subyyal1234@gmail.com </Text>
-            <Text style= {styles.heading}>Mobile Number</Text>
-            <Text style = {styles.txt}>03121234567</Text>
-            <Card.Divider />
+    <ScrollView>
+      <SafeAreaView style={styles.container}>
+        <Card>
+          <Card.Title>PERSONAL INFORMATION</Card.Title>
+          <Card.Divider />
+          <Card.Image
+            style={{ padding: 0, resizeMode: 'contain', overflow: 'hidden' }}
+            source={{
+              uri: 'https://hairmanz.com/wp-content/uploads/2020/04/man-bun-the-best-guide-for-men-mainart.jpg',
+            }}
+          />
 
-             <TouchableOpacity 
-             onPress = {() => navigation.navigate("EditProfile")}
-             style={styles.tch2}>
+          <Text
+            style={{
+              fontSize: 18,
+              fontWeight: 'bold',
+              alignSelf: 'center',
+              margin: 10,
+            }}>
+            PROFILE PICTURE
+          </Text>
+          <Card.Divider />
+          <Text style={styles.heading}>Name</Text>
+          <Text style={styles.txt}>{username} </Text>
+          <Text style={styles.heading}>Email</Text>
+          <Text style={styles.txt}>{email}</Text>
+          <Text style={styles.heading}>Mobile Number</Text>
+          <Text style={styles.txt}>{phone}</Text>
+          <Card.Divider />
+
+          <TouchableOpacity
+            onPress={() => {navigation.navigate('EditProfile', {name:username, Email:email,
+            contact:phone})}}
+            style={styles.tch2}>
             <Image
-            source= {{uri : 'https://www.iconsdb.com/icons/preview/white/edit-xxl.png'}}
-            style={styles.buttonImageIconStyle} />
-             <Text style={styles.btntxt}>Edit Your Profile</Text>
-             </TouchableOpacity>
-
-
-
-          </Card>
-        </SafeAreaView>
-      
-    </>
+              source={{
+                uri: 'https://www.iconsdb.com/icons/preview/white/edit-xxl.png',
+              }}
+              style={styles.buttonImageIconStyle}
+            />
+            <Text style={styles.btntxt}>Edit Your Profile</Text>
+          </TouchableOpacity>
+        </Card>
+      </SafeAreaView>
+    </ScrollView>
   );
 };
 
@@ -61,67 +113,48 @@ const styles = StyleSheet.create({
     flex: 1,
     //marginTop:"10%"
   },
-  fonts: {
-    marginBottom: 8,
-  },
-  user: {
-    flexDirection: 'row',
-    marginBottom: 6,
-  },
-  image: {
-    width: 30,
-    height: 30,
-    marginRight: 10,
-  },
-  name: {
-    fontSize: 16,
-    marginTop: 5,
-  },
   heading: {
     fontSize: 14,
-    marginTop:10,
+    marginTop: 10,
     textDecorationLine: 'underline',
     marginBottom: 4,
-    paddingLeft:5
-
+    paddingLeft: 5,
   },
   txt: {
     fontSize: 15,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 10,
-    paddingLeft:5
-
-
+    paddingLeft: 5,
   },
-   tch2 : {
-    alignItems: 'center', 
-    alignSelf: "center",  
-  borderRadius : 100,
-  borderWidth : 2,
-  borderColor: '#bf4137',
-  width: "50%",
-  backgroundColor: "black",
-   padding:5,
+  tch2: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    borderRadius: 100,
+    borderWidth: 2,
+    borderColor: '#bf4137',
+    width: '50%',
+    backgroundColor: 'black',
+    padding: 5,
     flexDirection: 'row',
-     height: 40,
-      marginTop: '20%',
+    height: 40,
+    marginTop: '20%',
   },
 
   btntxt: {
-    fontSize:13,
-    fontWeight: "bold",
-    color:"white",
-    alignContent:'center',
+    fontSize: 13,
+    fontWeight: 'bold',
+    color: 'white',
+    alignContent: 'center',
     alignSelf: 'center',
-    marginLeft: "10%"
-  }, 
- 
+    marginLeft: '10%',
+  },
+
   buttonImageIconStyle: {
     margin: 5,
     height: 25,
     width: 20,
     resizeMode: 'contain',
-  }, 
+  },
 });
 
 export default ProfileScreen;
