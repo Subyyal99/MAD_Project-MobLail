@@ -9,9 +9,41 @@ import {
   ImageBackground,
 } from 'react-native';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+ 
+
 const Home = ({ navigation }) => {
+  var id;
+  const getData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('user')
+      const val=JSON.parse(jsonValue);
+      id = val.id;
+      console.log("value",id);
+      //console.log(jsonValue)
+    } catch(e) {
+      // error reading value
+    }
+  }
+
+  // const getData = async () => {
+  //   try {
+  //     const value = await AsyncStorage.getItem('user')
+  //    // if(value !== null) {
+  //       // value previously stored
+  //       console.log("new home")
+  //     //}
+  //   } catch(e) {
+  //     // error reading value
+  //   }
+  // }
+  React.useEffect(() => {
+    getData();
+  }, []);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.body}>

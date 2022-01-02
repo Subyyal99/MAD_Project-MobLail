@@ -11,7 +11,7 @@ import {
   Switch,
   ScrollView,
 } from 'react-native';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Input } from 'react-native-elements';
 import { initializeApp } from 'firebase/app';
@@ -50,6 +50,16 @@ let arr=[]
     getData();
   }, []);
 
+  const storeData = async (value) => {
+    console.log("me idher agaya hun",value)
+    try {
+      const jsonValue = JSON.stringify(value)
+      await AsyncStorage.setItem('user', jsonValue)
+
+    } catch (e) {
+      // saving error
+    }
+  }
   const passchk = () => {
     var flag = 0;
     for (let i in users) {
@@ -59,24 +69,24 @@ let arr=[]
           flag = 2;
           break;
         }else{
-        
-         
+          
         }
-      } else {
-        console.log(users[i].password)
-        console.log(getpass)
+      }
+       else {
         if (users[i].username === getname && users[i].password === getpass) {
-          console.log("Checking pass")
+        
+          //console.log(currentuser)
           flag = 1;
+          break;
          
         }else{
-          console.log("pass not matched")
+          console.log("again pass not matched")
         
         }
       }
     }
     if (flag == 1) {
-      navigation.navigate('User');
+      navigation.navigate('User', {user:currentuser});
     }
     else if (flag == 2) {
       navigation.navigate('Admin');
@@ -113,6 +123,7 @@ let arr=[]
           style={styles.tch}
           onPress={() => passchk()}
           //onPress={() => navigation.navigate('Home')}
+          disabled = {getpass==""}
 
         >
           <Text style={styles.logintxt}>LOGIN</Text>

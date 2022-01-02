@@ -10,24 +10,38 @@ import {
 import { Text, Card, Button, Icon } from 'react-native-elements';
 import { initializeApp } from "firebase/app";
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const FIREBASE_API_ENDPOINT = 'https://fir-2bf8d-default-rtdb.firebaseio.com/';
+
+var id;
 
 const ProfileScreen = ({ navigation }) => {
 
   const [username, setusername] = useState();
   const [email, setemail] = useState();
   const [phone, setphone] = useState();
+  const getid = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('user')
+      const val=JSON.parse(jsonValue);
+      id = val.id;
+     
+    } catch(e) {
+      // error reading value
+    }
+  }
 
-  
+  React.useEffect(() => {
+    getid();
+  }, []);
+ 
+  console.log("profile", id)
   const getData = async () => {
     const response = await fetch(`${FIREBASE_API_ENDPOINT}/User.json`);
     const data = await response.json();
 
-    var arr = [];
    var keyValues = Object.keys(data);
-   console.log(keyValues)
-   const id = '-MsKK5Sz1qD36HWGyYb1';
       let key = keyValues[id];
       
         setusername(data[id].UserName),
@@ -92,7 +106,7 @@ const ProfileScreen = ({ navigation }) => {
 
           <TouchableOpacity
             onPress={() => {navigation.navigate('EditProfile', {name:username, Email:email,
-            contact:phone})}}
+            contact:phone, Id: id})}}
             style={styles.tch2}>
             <Image
               source={{

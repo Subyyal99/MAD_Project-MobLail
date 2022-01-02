@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View, TextInput,
   StyleSheet,
@@ -15,9 +15,12 @@ import { initializeApp } from "firebase/app";
 
 const FIREBASE_API_ENDPOINT = 'https://fir-2bf8d-default-rtdb.firebaseio.com/';
 
-const MobileAds = ({navigation}) => {
+const MobileAds = ({navigation, route}) => {
 const [products, setProducts] = React.useState();
+const [currentuser, setcurrent] = useState(route.params);
 
+console.log("in home")
+console.log(currentuser)
 const getData = async () => {
     const response = await fetch(`${FIREBASE_API_ENDPOINT}/tasks.json`);
     const data = await response.json();

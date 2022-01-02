@@ -19,7 +19,7 @@ const SignUpScreen = ({ navigation }) => {
   const [password, setpassword] = useState('');
   const [email, setemail] = useState('');
   const [phone, setphone] = useState('');
-  const [admin, setAdmin] = useState(false);
+  const [admin, setAdmin] = useState('0');
 
   const makeUser = () =>{
     var requestOptions = {

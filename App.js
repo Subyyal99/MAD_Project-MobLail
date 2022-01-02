@@ -21,7 +21,7 @@ import MyAds from './components/MyAds.js';
 
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const LoginStack = createNativeStackNavigator();
 

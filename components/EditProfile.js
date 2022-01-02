@@ -7,22 +7,41 @@ import {
 import { Text, Card, Button, Icon } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 import { initializeApp } from "firebase/app";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 
 const FIREBASE_API_ENDPOINT = 'https://fir-2bf8d-default-rtdb.firebaseio.com/';
 
 
+
+
+var id;
 const EditProfileScreen = ({navigation, route}) => {
+  
   const [username, setusername] = useState(route.params.name);
   const [email, setemail] = useState(route.params.Email);
   const [phone, setphone] = useState(route.params.contact);
   const [image, setimage] = useState();
    const [isSelected, setSelect] = useState('');
-   const updateData = () => {
 
-    const id = '-MsKK5Sz1qD36HWGyYb1';
-    console.log('I am update')
-   console.log(id)
+   const getid = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('user')
+      const val=JSON.parse(jsonValue);
+      id = val.id;     
+    } catch(e) {
+      // error reading value
+    }
+  }
+
+  React.useEffect(() => {
+    getid();
+  }, []);
+
+
+
+   const updateData = () => {
     var requestOptions = {
       method: 'PATCH',
       body: JSON.stringify({
@@ -97,7 +116,7 @@ const EditProfileScreen = ({navigation, route}) => {
         />
         <Card.Divider />
         <TouchableOpacity 
-        onPress = {() => {navigation.navigate("Profile"); updateData();}}
+        onPress = {() => {navigation.navigate("Home"); updateData();}}
         //onPress={()=>updateData()}
         style={styles.tch2}>
         <Text style={styles.btntxt}>SAVE</Text>
