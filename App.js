@@ -5,9 +5,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LoginScreen from './components/Login.js';
 import SignupScreen from './components/Signup';
-import PostAdScreen from './components/PostAd';
-import EditAdScreen from './components/EditAd';
-import UpdateAdScreen from './components/UpdateAd';
+import PostAd from './components/PostAd';
+import MyAdsDetails from './components/MyAdsDetails';
+import UpdateAd from './components/UpdateAd';
 import ProfileScreen from './components/Profile';
 import EditProfileScreen from './components/EditProfile';
 import Home from './components/home.js';
@@ -42,6 +42,7 @@ function MainStackScreen() {
         component={AdminStackScreen}
          options={{
           headerShown: false,
+          
         }}
       />
       <MainStack.Screen
@@ -93,14 +94,14 @@ function HomeStackScreen() {
       <HomeStack.Screen name="Details" component={Detail} />
       <HomeStack.Screen
         name="PostAd"
-        component={PostAdScreen}
+        component={PostAd}
         options={{
           headerTitle: 'POST A NEW AD',
         }}
       />
       <HomeStack.Screen
-        name="EditAd"
-        component={EditAdScreen}
+        name="MyAdsDetails"
+        component={MyAdsDetails}
         options={{
           headerTitle: 'YOUR AD',
         }}
@@ -120,15 +121,15 @@ function HomeStackScreen() {
         }}
       />
       <HomeStack.Screen
-        name="MyAd"
+        name="MyAds"
         component={MyAds}
         options={{
           headerTitle: 'VIEW YOUR ADS',
         }}
       />
       <HomeStack.Screen
-        name="UpdateAd"
-        component={UpdateAdScreen}
+        name="UpdateMyAds"
+        component={UpdateAd}
         options={{
           headerTitle: 'EDIT YOUR ADS',
         }}
@@ -163,12 +164,34 @@ const AdminStack = createNativeStackNavigator();
 function AdminStackScreen() {
   return (
     <AdminStack.Navigator initialRouteName="AdminHome">
-      <AdminStack.Screen name="AdminHome" component={adminHome} />
-      <AdminStack.Screen name="UserManage" component={userM} />
-      <AdminStack.Screen name="UserManageDetails" component={userM2} />
-      <AdminStack.Screen name="AddBrand" component={adBrand} />
-      <AdminStack.Screen name="AdManage" component={adM} />
-      <AdminStack.Screen name="AdManageDetails" component={adM2} />
+      <AdminStack.Screen name="AdminHome" component={adminHome} 
+      options={{
+        headerLeft: null,
+        headerTitle: 'ADMIN HOME',
+      }}/>
+      <AdminStack.Screen name="UserManage" component={userM} 
+       options={{
+        
+        headerTitle: 'MANAGE USERS',
+      }}/>
+      <AdminStack.Screen name="UserManageDetails" component={userM2} 
+      options={{
+        
+        headerTitle: 'USER DETAILS',
+      }}/>
+      <AdminStack.Screen name="AddBrand" component={adBrand}
+      options={{
+      
+        headerTitle: 'ADD BRAND',
+      }} />
+      <AdminStack.Screen name="AdManage" component={adM}
+      options={{
+        headerTitle: 'MANAGE AD',
+      }} />
+      <AdminStack.Screen name="AdManageDetails" component={adM2} 
+      options={{
+        headerTitle: 'AD DETAILS',
+      }}/>
     </AdminStack.Navigator>
   );
 }
@@ -192,7 +215,7 @@ function MyTabs() {
         }}
       />
       <Tab.Screen
-        name="profile"
+        name="Profile"
         component={ProfileStackScreen}
         options={{
           tabBarLabel: 'Profile',

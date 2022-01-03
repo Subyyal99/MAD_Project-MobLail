@@ -11,7 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
-const FIREBASE_API_ENDPOINT = 'https://fir-2bf8d-default-rtdb.firebaseio.com/';
+const FIREBASE_API_ENDPOINT = 'https://moblail-default-rtdb.firebaseio.com/';
 
 
 
@@ -51,7 +51,7 @@ const EditProfileScreen = ({navigation, route}) => {
       }),
     };
 
-    fetch(`${FIREBASE_API_ENDPOINT}/User/${id}.json`, requestOptions)
+    fetch(`${FIREBASE_API_ENDPOINT}/Users/${id}.json`, requestOptions)
       .then((response) => response.json())
       .then((result) => console.log(result))
       .catch((error) => console.log('error', error));

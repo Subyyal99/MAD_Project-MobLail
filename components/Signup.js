@@ -12,7 +12,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { Input } from 'react-native-elements';
 import { initializeApp } from "firebase/app";
 
-const FIREBASE_API_ENDPOINT = 'https://fir-2bf8d-default-rtdb.firebaseio.com/';
+const FIREBASE_API_ENDPOINT = 'https://moblail-default-rtdb.firebaseio.com/';
 
 const SignUpScreen = ({ navigation }) => {
   const [name, setname] = useState('');
@@ -34,7 +34,7 @@ const SignUpScreen = ({ navigation }) => {
       }),
       
     };
-    fetch(`${FIREBASE_API_ENDPOINT}/User.json`, requestOptions)
+    fetch(`${FIREBASE_API_ENDPOINT}/Users.json`, requestOptions)
       .then((response) => response.json())
       .then((result) => console.log(result))
       .catch((error) => console.log('error', error));

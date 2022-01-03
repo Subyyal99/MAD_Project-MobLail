@@ -13,21 +13,22 @@ import {
 import { Text, Card, Button, Icon } from 'react-native-elements';
 import { NavigationContainer } from '@react-navigation/native';
 
-
 import { initializeApp } from "firebase/app";
 
 
-const FIREBASE_API_ENDPOINT = 'https://fir-2bf8d-default-rtdb.firebaseio.com/';
+
+const FIREBASE_API_ENDPOINT = 'https://moblail-default-rtdb.firebaseio.com/';
 
 const MyAds = ({navigation}) => {
 const [products, setProducts] = React.useState();
 
 const getData = async () => {
-    const response = await fetch(`${FIREBASE_API_ENDPOINT}/tasks.json`);
+    const response = await fetch(`${FIREBASE_API_ENDPOINT}/ads.json`);
     const data = await response.json();
 
     var arr = [];
    var keyValues = Object.keys(data);
+   
 
     for (let i = 0; i < keyValues.length; i++) {
       let key = keyValues[i];
@@ -58,26 +59,28 @@ const getData = async () => {
   
   
  return (
-    <View style = {{flex:1, alignSelf: 'center'}}>
+    <View style = {styles.container}>
       <FlatList style={styles.showList}
       refreshing={false}
+      keyExtractor={(item) => item.key}
       onRefresh={getData}
       data={products}
       numColumns={2}
       renderItem={({item,index})=>
       <TouchableOpacity 
+      style={styles.touch}
       onPress={()=>
-        navigation.navigate("EditAd", item)
+        navigation.navigate("MyAdsDetails", item)
         }>
             <Card containerStyle={styles.box}>
               <Card.Image
                 style={{ marginBottom:10, resizeMode:'contain', overflow:'hidden'}}
                  source={require('../assets/pixel4.jpg')}
-                  resizeMode="cover"
+                  resizeMode="contain"
               />
               <Card.Divider />
-              <Text style={styles.cardTitle}>{item.Brand}</Text>
-              <Text style={styles.priceText}>{item.Price}</Text>
+              <Text style={styles.cardTitle}>{item.Model}</Text>
+              <Text style={styles.cardText}>{item.Price}</Text>
               <Card.Divider />
               
             </Card>
@@ -91,15 +94,39 @@ const getData = async () => {
 }
 
 const styles = StyleSheet.create({
- 
-  box: {
+  container : {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent:'center',
+    backgroundColor:'black',
+    },
+   
+  showList:{
     flex:1,
-    backgroundColor:'lightgray',
-    width:"90%"
-    
+    width:"90%",
   },
- 
+  box: {
+    padding:0,
+    backgroundColor:'lightgray',
+    width:"100%",
+  },
+  touch: {
+    padding:10,
+    width:"47%",
+    height:"50%"
+  },
   
+ cardTitle: {
+  padding:5,
+  alignSelf:'center',
+  fontWeight:'bold',
+  marginTop:-10
+ },
+ cardText: {
+  alignSelf:'center',
+  marginBottom:5
+ },
+
  
 });
 

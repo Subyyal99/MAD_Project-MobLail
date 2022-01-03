@@ -1,106 +1,156 @@
 import React from 'react';
-import { View, ScrollView, StyleSheet, Image, TouchableOpacity,SafeAreaView } from 'react-native';
+import { View, ScrollView, StyleSheet, Image, TouchableOpacity,
+  SafeAreaView, FlatList } from 'react-native';
 import { Text, Card, Button, Icon } from 'react-native-elements';
+import { initializeApp } from "firebase/app";
 
-const ads = [
-  {
-    name: 'Pixel4a',
-    id:1,
-    avatar: 'https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Copy_of_Pixel_4a_Front__Back_2_DsEGUfI.max-1000x1000.jpg',
-  },
-  {
-    name: 'iPhone5',
-    id:2,
-    avatar: 'https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Copy_of_Pixel_4a_Front__Back_2_DsEGUfI.max-1000x1000.jpg',
-  },
-  {
-    name: 'Banana Phone',
-    id:3,
-    avatar: 'https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Copy_of_Pixel_4a_Front__Back_2_DsEGUfI.max-1000x1000.jpg',
-  },
-  
-];
+
+const FIREBASE_API_ENDPOINT = 'https://moblail-default-rtdb.firebaseio.com/';
+
+const deleteData = (id) => {
+     
+  const i = id;
+  var requestOptions = {
+    method: 'DELETE',
+  };
+
+  fetch(`${FIREBASE_API_ENDPOINT}/ads/${i}.json`, requestOptions)
+    .then((response) => response.json())
+    .then((result) => console.log('Delete Response:', result))
+    .catch((error) => console.log('error', error));
+};
 
 const adM = ({navigation}) => {
+  const [products,setProducts]=React.useState([])
+
+  const getData = async () => {
+    const response = await fetch(`${FIREBASE_API_ENDPOINT}/ads.json`);
+    const data = await response.json();
+  
+    var arr = [];
+   var keyValues = Object.keys(data);
+  
+    for (let i = 0; i < keyValues.length; i++) {
+      let key = keyValues[i];
+      let credential = {
+        Brand: data[key].Brand,
+        Price: data[key].Price,
+        Model: data[key].Model,
+        Details: data[key].Details,
+        Contact: data[key].Contact,
+        ID: key
+      
+      };
+      arr.push(credential);
+    }
+    console.log(arr);
+    setProducts(arr)
+  };
+    
+  React.useEffect(() => {
+    getData();
+  }, []);
+
   return (
-      <ScrollView>
+
         <View style={styles.container}>
-          <Card>
-            <Card.Title>Add Management</Card.Title>
+      <Card>
+      <Card.Title>AD MANAGEMENT</Card.Title>
             <Card.Divider />
-            {ads.map((u, i) => {
-              return (
-                
-                <View key={i} 
-                style={{flexDirection:'row', justifyContent:'space-between'}}>
-                <TouchableOpacity style={{flexDirection: 'row',marginBottom:5}}
-               onPress={()=>{navigation.navigate('AdManageDetails')}}>
-                  <Image
-                    style={styles.image}
-                    resizeMode="cover"
-                    source={{ uri: u.avatar }}
-                  />
-                  <Text style={styles.name}>AD ID: {u.id} </Text>
-                  <Text style={styles.name}>{u.name}</Text>
-                  </TouchableOpacity>
-                   <TouchableOpacity onPress={()=>console.log('Direct Delete')}>
-                  <Icon name='delete' />
-                  </TouchableOpacity>
-                </View>
-                
-              );
-            })}
-          </Card>
+      <FlatList
+      refreshing={false}
+      keyExtractor={(item) => item.key}
+      onRefresh={getData}
+      data={products}
+
+      renderItem={({item,index})=>
+
+      <View 
+      style={{flexDirection:'row', justifyContent:'space-between'}}>
+      <TouchableOpacity style={{flexDirection: 'row',marginBottom:5}}
+     onPress={()=>
+      navigation.navigate("AdManageDetails", item)
+      }>
+        <Image
+          style={styles.image}
+          resizeMode="cover"
+          source={require('../assets/pixel4.jpg')}
+        />
+        <Text style={styles.name}>{item.Brand}</Text>
+        </TouchableOpacity>
+         <TouchableOpacity  onPress = {() => {navigation.navigate('AdManage'), deleteData(item.ID)}}>
+        <Icon name='delete' />
+        </TouchableOpacity>
+      </View>
+        }
+        />
+        </Card>
         </View>
-      </ScrollView>
      
   );
 };
 
-const adM2 =()=>{
+const adM2 =({navigation, route})=>{
+
   return (
-    <View style={styles.container}>
-      <Card>
-        <Card.Image
-          style={{
-            marginBottom: 10,
-            resizeMode: 'contain',
-            overflow: 'hidden',
-          }}
-          source={{uri:('https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Copy_of_Pixel_4a_Front__Back_2_DsEGUfI.max-1000x1000.jpg')}}
-        />
-        <Text style={{ fontSize: 25, fontWeight: 'bold' }}>
-          Google Pixel 4a
+    <ScrollView>
+    <SafeAreaView style={styles.container}>
+          
+          <Card>
+          
+            <Card.Title>AD INFORMATION</Card.Title>
+            <Card.Divider />
+            <Card.Image
+              style={{ padding: 0, resizeMode: 'contain', overflow: 'hidden' }}
+              source={{
+                uri:
+                  'https://hairmanz.com/wp-content/uploads/2020/04/man-bun-the-best-guide-for-men-mainart.jpg',
+              }}
+            />
+          
+            
+        <Text style={{ fontSize: 25, fontWeight: 'bold',marginTop:5, marginBottom:5 }}>
+         {route.params.Brand}
+
         </Text>
         <Card.Divider />
-        <Text style={styles.heading2}>Details:</Text>
-
-        <Text style={styles.txt1}>Price:</Text>
+        <View style= {styles.rowview}>
+        <Text style={styles.txt1}>Price: </Text>
+        <Text style= {styles.txt1}>{route.params.Price}</Text>
+        </View>
+        <View style= {styles.rowview}>
         <Text style={styles.txt1}>Company:</Text>
+        <Text style= {styles.txt1}>{route.params.Brand}</Text>
+        </View>
+        <View style= {[styles.rowview, {marginBottom:'5%'}]}>
         <Text style={styles.txt1}>Model:</Text>
-
+        <Text style= {styles.txt1}>{route.params.Model}</Text>
+        </View> 
+         <Card.Divider />
+        <Text style={styles.heading2}>Description</Text>
+        <Text style={[styles.txt1, {marginBottom:'5%'}]}>{route.params.Details}</Text>
         <Card.Divider />
-        <Text style={styles.heading2}>Description:</Text>
-        <Text style={styles.txt1}>Conidtion 10/10, body mint.</Text>
-        <Card.Divider />
-        <Text style={styles.heading2}>Owner:</Text>
-        
-        <Text style={{paddingBottom:5,paddingRight:200}}>Azam</Text>
-         <Text style= {styles.heading}>Reviews</Text>
-            <Text style = {styles.txt}>Fraud Ad</Text>
-            <Card.Divider />
+        <Text style={styles.heading2}>Conidtion</Text>
+        <Text style={[styles.txt1, {marginBottom:'5%'}]}>New</Text>
+        <Card.Divider /> 
+        <Text style={styles.heading2}>Mobile Number</Text>
+        <Text style={[styles.txt1, {marginBottom:'5%'}]}>{route.params.Contact}</Text> 
+        <Card.Divider /> 
 
              <TouchableOpacity 
-             onPress = {() => console.log('delete')}
+             onPress = {() => {navigation.navigate('AdManage'), deleteData(route.params.ID)}}
              style={styles.tch2}>
            <Icon name='delete'
            color='white'/>
              <Text style={styles.btntxt}>Delete</Text>
              </TouchableOpacity>
-       
 
-      </Card>
-    </View>
+
+
+          </Card>
+        </SafeAreaView>
+        </ScrollView>
+     
   );
 }
 
@@ -108,7 +158,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
- 
+
   image: {
     width: 30,
     height: 30,
@@ -117,6 +167,22 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 16,
     marginTop: 5,
+  },
+  txt1: {
+    //padding: 5,
+    fontSize:16,
+    marginTop:'3%',
+    
+  },
+  rowview: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+
+  },
+  heading2: {
+    fontSize: 15,
+     fontWeight: 'bold',  
+     textDecorationLine: 'underline' 
   },
 
   heading: {

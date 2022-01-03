@@ -1,78 +1,94 @@
 import React from 'react';
-import { View, ScrollView, StyleSheet, Image, TouchableOpacity,SafeAreaView } from 'react-native';
+import { View, ScrollView, StyleSheet, Image, TouchableOpacity,
+  SafeAreaView, FlatList } from 'react-native';
 import { Text, Card, Button, Icon } from 'react-native-elements';
+import { initializeApp } from "firebase/app";
 
-const users = [
-  {
-    name: 'brynn',
-    avatar: 'https://uifaces.co/our-content/donated/1H_7AxP0.jpg',
-  },
-  {
-    name: 'thot leader',
-    avatar:
-      'https://images.pexels.com/photos/598745/pexels-photo-598745.jpeg?crop=faces&fit=crop&h=200&w=200&auto=compress&cs=tinysrgb',
-  },
-  {
-    name: 'jsa',
-    avatar: 'https://uifaces.co/our-content/donated/bUkmHPKs.jpg',
-  },
-  {
-    name: 'talhaconcepts',
-    avatar: 'https://randomuser.me/api/portraits/men/4.jpg',
-  },
-  {
-    name: 'andy vitale',
-    avatar: 'https://uifaces.co/our-content/donated/NY9hnAbp.jpg',
-  },
-  {
-    name: 'tals',
-    avatar: 'https://hairmanz.com/wp-content/uploads/2020/04/man-bun-the-best-guide-for-men-mainart.jpg',
-  },
-  {
-    name: 'katy friedson',
-    avatar:
-      'https://images-na.ssl-images-amazon.com/images/M/MV5BMTgxMTc1MTYzM15BMl5BanBnXkFtZTgwNzI5NjMwOTE@._V1_UY256_CR16,0,172,256_AL_.jpg',
-  },
-];
 
+const FIREBASE_API_ENDPOINT = 'https://moblail-default-rtdb.firebaseio.com/';
+
+const deleteData = (id) => {
+     
+  const i = id;
+  var requestOptions = {
+    method: 'DELETE',
+  };
+
+  fetch(`${FIREBASE_API_ENDPOINT}/Users/${i}.json`, requestOptions)
+    .then((response) => response.json())
+    .then((result) => console.log('Delete Response:', result))
+    .catch((error) => console.log('error', error));
+};
 
 const userM = ({navigation}) => {
+  const [users, setusers] = React.useState();
+
+  const getData = async () => {
+    const response = await fetch(`${FIREBASE_API_ENDPOINT}/Users.json`);
+    const data = await response.json();
+  
+    var arr = [];
+   var keyValues = Object.keys(data);
+  
+    for (let i = 0; i < keyValues.length; i++) {
+      let key = keyValues[i];
+      let credential = {
+        username: data[key].UserName,
+        email: data[key].Email,
+        phone: data[key].Contact,
+        id: key
+      
+      };
+      arr.push(credential);
+    }
+    console.log(arr);
+    setusers(arr)
+  };
+    
+  React.useEffect(() => {
+    getData();
+  }, []);
+
   return (
-      <ScrollView>
         <View style={styles.container}>
-          <Card>
-            <Card.Title>User Management</Card.Title>
+      <Card>
+      <Card.Title>User Management</Card.Title>
             <Card.Divider />
-            {users.map((u, i) => {
-              return (
-                
-                <View key={i} 
-                style={{flexDirection:'row', justifyContent:'space-between'}}>
-                <TouchableOpacity style={{flexDirection: 'row',marginBottom:5}}
-               onPress={()=>{navigation.navigate('UserManageDetails')}}>
-                  <Image
-                    style={styles.image}
-                    resizeMode="cover"
-                    source={{ uri: u.avatar }}
-                  />
-                  
-                  <Text style={styles.name}>{u.name}</Text>
-                  </TouchableOpacity>
-                   <TouchableOpacity onPress={()=>console.log('Direct Delete')}>
-                  <Icon name='delete' />
-                  </TouchableOpacity>
-                </View>
-                
-              );
-            })}
+      <FlatList
+      refreshing={false}
+      keyExtractor={(item) => item.key}
+      onRefresh={getData}
+      data={users}
+
+      renderItem={({item,index})=>
+
+      <View 
+      style={{flexDirection:'row', justifyContent:'space-between'}}>
+      <TouchableOpacity style={{flexDirection: 'row',marginBottom:5}}
+     onPress={()=>
+      navigation.navigate("UserManageDetails", item)
+      }>
+        <Image
+          style={styles.image}
+          resizeMode="cover"
+          source={require('../assets/pixel4.jpg')}
+        />
+        <Text style={styles.name}>{item.username}</Text>
+        </TouchableOpacity>
+         <TouchableOpacity  onPress = {() => {navigation.navigate('UserManage'), deleteData(item.id)}}>
+        <Icon name='delete' />
+        </TouchableOpacity>
+      </View>
+        }
+        />
           </Card>
         </View>
-      </ScrollView>
      
   );
 };
 
-const userM2 =()=>{
+const userM2 =({navigation, route})=>{
+
   return (
     <SafeAreaView style={styles.container}>
           
@@ -98,17 +114,15 @@ const userM2 =()=>{
             PROFILE PICTURE</Text>
              <Card.Divider />
              <Text style= {styles.heading}>Name</Text>
-            <Text style = {styles.txt}>SUBYYAL SIDDIQUI </Text>
+            <Text style = {styles.txt}>{route.params.username} </Text>
             <Text style= {styles.heading}>Email</Text>
-            <Text style = {styles.txt}>subyyal1234@gmail.com </Text>
+            <Text style = {styles.txt}>{route.params.email} </Text>
             <Text style= {styles.heading}>Mobile Number</Text>
-            <Text style = {styles.txt}>03121234567</Text>
-            <Text style= {styles.heading}>Reviews</Text>
-            <Text style = {styles.txt}>Fraud Ad</Text>
+            <Text style = {styles.txt}>{route.params.phone}</Text>
             <Card.Divider />
 
              <TouchableOpacity 
-             onPress = {() => console.log('delete')}
+             onPress = {() => {navigation.navigate('UserManage'), deleteData(route.params.id)}}
              style={styles.tch2}>
            <Icon name='delete'
            color='white'/>

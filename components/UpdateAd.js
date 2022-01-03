@@ -4,18 +4,18 @@ import {
   TextInput,
   StyleSheet, TouchableOpacity,  SafeAreaView, Image, StatusBar, ScrollView,CheckBox, Picker
 } from 'react-native'
-import { Text, Card, Button, Icon } from 'react-native-elements';
+import { Text, Card, Button, Icon, Overlay} from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 
 import { initializeApp } from "firebase/app";
 
 
-const FIREBASE_API_ENDPOINT = 'https://fir-2bf8d-default-rtdb.firebaseio.com/';
+const FIREBASE_API_ENDPOINT = 'https://moblail-default-rtdb.firebaseio.com/';
 
 
 
-const UpdateAdScreen= ({navigation,route}) => {
-  console.log("Plis"+route.params.p)
+const UpdateAd = ({navigation,route}) => {
+ 
   const [image, setimage] = useState();
   const [price, setPrice] =useState(route.params.p);
   const [brand, setBrand] =useState(route.params.b);
@@ -24,20 +24,24 @@ const UpdateAdScreen= ({navigation,route}) => {
   const [isSelected, setSelect] = useState('');
   const [number, setNumber] =useState(route.params.c);
   const [img, setimg] = useState();
+  const [visible, setVisible] = useState(false);
+  
+    const toggleOverlay = () => {
+      setVisible(!visible);
+    };
   
 
 const [getD,setD] = useState();
   const getData = async () => {
-    const response = await fetch(`${FIREBASE_API_ENDPOINT}/tasks.json`);
+    const response = await fetch(`${FIREBASE_API_ENDPOINT}/ads.json`);
     const data = await response.json();
     console.log(data);
   };
-  console.log(price,brand,model+"i is")
+  
   const updateData = () => {
 
-    const id = route.params.i;
-    console.log('I am update')
-   console.log(id)
+    const id =route.params.i;
+    
     var requestOptions = {
       method: 'PATCH',
       body: JSON.stringify({
@@ -49,7 +53,7 @@ const [getD,setD] = useState();
       }),
     };
 
-    fetch(`${FIREBASE_API_ENDPOINT}/tasks/${id}.json`, requestOptions)
+    fetch(`${FIREBASE_API_ENDPOINT}/ads/${id}.json`, requestOptions)
       .then((response) => response.json())
       .then((result) => console.log(result))
       .catch((error) => console.log('error', error));
@@ -70,7 +74,7 @@ const [getD,setD] = useState();
    
   }
   return (
-  
+    <>
         <SafeAreaView style={styles.container}>
         <ScrollView>
           <Card>
@@ -137,9 +141,20 @@ const [getD,setD] = useState();
         />
         <Card.Divider />
         <TouchableOpacity style={styles.postbtn}
-        onPress ={()=>updateData()}>
+        onPress ={()=>{updateData();toggleOverlay()}}>
         <Text style={styles.imgtxt}>UPDATE</Text>
         </TouchableOpacity>
+
+        <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
+        <Text style={styles.textPrimary}>Success!</Text>
+        <Text style={styles.textSecondary}>
+          UPDATION DONE.
+        </Text>
+        <Button
+          title="Okay"
+          onPress={()=>{toggleOverlay(); navigation.navigate("MyAds")}}
+        />
+      </Overlay>
         
 
         </Card>
@@ -147,6 +162,7 @@ const [getD,setD] = useState();
         
         </SafeAreaView>
       
+    </>
   );
 };
 
@@ -223,8 +239,18 @@ alignSelf: "center",
     marginBottom: 4,
     paddingLeft:5,
     fontWeight: 'bold'
-
+  },
+  textPrimary: {
+    marginVertical: 20,
+    textAlign: 'center',
+    fontSize: 20,
+  },
+  textSecondary: {
+    marginBottom: 10,
+    textAlign: 'center',
+    fontSize: 17,
+    padding:20
   },
 });
 
-export default UpdateAdScreen;
+export default UpdateAd;

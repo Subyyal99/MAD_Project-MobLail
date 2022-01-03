@@ -7,6 +7,27 @@ import { Text, View,
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const adminHome =({navigation})=> {
+  
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+        onPress={() => navigation.navigate('Login')}
+          style={{borderRadius: 100,
+            borderWidth: 2,
+            borderColor: '#bf4137',
+            backgroundColor: 'black',
+            padding: 5,
+            alignItems: 'center',
+            padding: 10,
+           }} >
+          <Text style={{ 
+          fontWeight: 'bold',
+          color: 'white',}}>
+            LOGOUT</Text></TouchableOpacity>
+      )
+    });
+  });
   return (
     <SafeAreaView style={styles.container} >
    <Text style={{
@@ -37,7 +58,6 @@ const adminHome =({navigation})=> {
     <Icon name='tasks' size={24} />
    </View>
         </TouchableOpacity>
-        <Button title="logout" onPress={() => navigation.navigate('Login')} />        
     </View>
     </SafeAreaView>
   );

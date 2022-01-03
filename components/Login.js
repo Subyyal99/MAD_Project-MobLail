@@ -16,7 +16,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { Input } from 'react-native-elements';
 import { initializeApp } from 'firebase/app';
 
-const FIREBASE_API_ENDPOINT = 'https://fir-2bf8d-default-rtdb.firebaseio.com/';
+const FIREBASE_API_ENDPOINT = 'https://moblail-default-rtdb.firebaseio.com/';
 
 const LoginScreen = ({ navigation, event }) => {
   const [users, setusers] = React.useState([]);
@@ -24,7 +24,7 @@ const LoginScreen = ({ navigation, event }) => {
   const [getpass, setpass] = useState("");
 
   const getData = async () => {
-    const response = await fetch(`${FIREBASE_API_ENDPOINT}/User.json`);
+    const response = await fetch(`${FIREBASE_API_ENDPOINT}/Users.json`);
     const data = await response.json();
     
     var keyValues = Object.keys(data);
@@ -51,7 +51,6 @@ let arr=[]
   }, []);
 
   const storeData = async (value) => {
-    console.log("me idher agaya hun",value)
     try {
       const jsonValue = JSON.stringify(value)
       await AsyncStorage.setItem('user', jsonValue)
@@ -74,6 +73,7 @@ let arr=[]
       }
        else {
         if (users[i].username === getname && users[i].password === getpass) {
+          storeData(users[i]);
         
           //console.log(currentuser)
           flag = 1;
@@ -86,7 +86,7 @@ let arr=[]
       }
     }
     if (flag == 1) {
-      navigation.navigate('User', {user:currentuser});
+      navigation.navigate('User');
     }
     else if (flag == 2) {
       navigation.navigate('Admin');

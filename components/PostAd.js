@@ -4,11 +4,11 @@ import {
   TextInput,
   StyleSheet, TouchableOpacity,  SafeAreaView, Image, StatusBar, ScrollView,CheckBox, Picker
 } from 'react-native'
-import { Text, Card, Button, Icon } from 'react-native-elements';
+import { Text, Card, Button, Icon, Overlay } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 import { initializeApp } from "firebase/app";
 
-const FIREBASE_API_ENDPOINT = 'https://fir-2bf8d-default-rtdb.firebaseio.com/';
+const FIREBASE_API_ENDPOINT = 'https://moblail-default-rtdb.firebaseio.com/';
 
 const PostAd = ({navigation}) => {
   const [image, setimage] = useState();
@@ -18,10 +18,14 @@ const PostAd = ({navigation}) => {
   const [detail, setDetail] =useState();
   const [isSelected, setSelect] = useState('');
   const [number, setNumber] =useState();
-
+  const [visible, setVisible] = useState(false);
+  
+    const toggleOverlay = () => {
+      setVisible(!visible);
+    };
+  
   //FIREBASE POSTING
-  const postData = async () => {
-    
+  const postData = () => {
     var requestOptions = {
       method: 'POST',
       body: JSON.stringify({
@@ -29,18 +33,20 @@ const PostAd = ({navigation}) => {
         Brand: brand,
         Model: model,
         Details: detail,
-        Contact: number,        
+        Contact: number,
+        img: image,  
+        condtion: isSelected      
 
       }),
       
     };
-    fetch(`${FIREBASE_API_ENDPOINT}/tasks.json`, requestOptions)
+    fetch(`${FIREBASE_API_ENDPOINT}/ads.json`, requestOptions)
       .then((response) => response.json())
       .then((result) => console.log(result))
       .catch((error) => console.log('error', error));
   };
 
-  var defaultimg = "https://www.gizmochina.com/wp-content/uploads/2018/02/Samsung-Galaxy-S8-Plus-G955F_2-500x500.jpg"
+  var defaultimg = "https://media.istockphoto.com/vectors/image-preview-icon-picture-placeholder-for-website-or-uiux-design-vector-id1222357475?k=20&m=1222357475&s=612x612&w=0&h=jPhUdbj_7nWHUp0dsKRf4DMGaHiC16kg_FSjRRGoZEI="
   let openImagePickerAsync = async () => {
     let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -53,7 +59,9 @@ const PostAd = ({navigation}) => {
     console.log(pickerResult);
    
   }
+ 
   return (
+    <>
         <SafeAreaView style={styles.container}>
         <ScrollView>
           <Card>
@@ -117,16 +125,27 @@ const PostAd = ({navigation}) => {
         />
         <Card.Divider />
         <TouchableOpacity style={styles.postbtn}
-        onPress={postData}>
+        onPress={()=>{postData();toggleOverlay()}}>
         <Text style={styles.imgtxt}>POST</Text>
         </TouchableOpacity>
         
+        <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
+        <Text style={styles.textPrimary}>Success!</Text>
+        <Text style={styles.textSecondary}>
+          Your Ad was Posted
+        </Text>
+        <Button
+          title="Okay"
+          onPress ={()=>{navigation.navigate("Home");toggleOverlay()}}
+        />
+      </Overlay>
 
         </Card>
         </ScrollView>
         
         </SafeAreaView>
-    
+      
+    </>
   );
 };
 
@@ -203,7 +222,17 @@ alignSelf: "center",
     marginBottom: 4,
     paddingLeft:5,
     fontWeight: 'bold'
-
+  },
+  textPrimary: {
+    marginVertical: 20,
+    textAlign: 'center',
+    fontSize: 20,
+  },
+  textSecondary: {
+    marginBottom: 10,
+    textAlign: 'center',
+    fontSize: 17,
+    padding:20
   },
 });
 

@@ -9,14 +9,21 @@ import {
 
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { Text, Card, Button, Icon, AntDesign } from 'react-native-elements';
+import { Text, Card, Button, Icon, AntDesign, Overlay} from 'react-native-elements';
 
 import { initializeApp } from "firebase/app";
 
-const FIREBASE_API_ENDPOINT = 'https://fir-2bf8d-default-rtdb.firebaseio.com/';
+const FIREBASE_API_ENDPOINT = 'https://moblail-default-rtdb.firebaseio.com/';
 
-const EditAdScreen = ({route,navigation}) => {
+const MyAdDetails = ({route,navigation}) => {
+  const [visible, setVisible] = useState(false);
+  
+    const toggleOverlay = () => {
+      setVisible(!visible);
+    };
+  
   //var id2=route.params.ID
+
    const deleteData = () => {
      
     const id = route.params.ID;
@@ -24,7 +31,7 @@ const EditAdScreen = ({route,navigation}) => {
       method: 'DELETE',
     };
 
-    fetch(`${FIREBASE_API_ENDPOINT}/tasks/${id}.json`, requestOptions)
+    fetch(`${FIREBASE_API_ENDPOINT}/ads/${id}.json`, requestOptions)
       .then((response) => response.json())
       .then((result) => console.log('Delete Response:', result))
       .catch((error) => console.log('error', error));
@@ -52,7 +59,7 @@ const EditAdScreen = ({route,navigation}) => {
         </Text>
         <Card.Divider />
         <View style= {styles.rowview}>
-        <Text style={styles.txt1}>Price</Text>
+        <Text style={styles.txt1}>Price:</Text>
         <Text style= {styles.txt1}>{route.params.Price}</Text>
         </View>
         <View style= {styles.rowview}>
@@ -77,7 +84,7 @@ const EditAdScreen = ({route,navigation}) => {
         
      <View style = {styles.viewbtn}>
       <TouchableOpacity 
-       onPress={()=>{navigation.navigate("UpdateAd",{i:route.params.ID,
+       onPress={()=>{navigation.navigate("UpdateMyAds",{i:route.params.ID,
        p:route.params.Price,b:route.params.Brand,d:route.params.Details,
        c:route.params.Contact,m:route.params.Model})}}
       style={styles.tch2}>
@@ -91,7 +98,9 @@ const EditAdScreen = ({route,navigation}) => {
         <Text style={styles.btntxt}>Update</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.tch2}
-      onPress ={()=>deleteData()}>
+      onPress ={()=>{
+      toggleOverlay();
+     }}>
       <Image
             source={{
               uri:
@@ -102,6 +111,17 @@ const EditAdScreen = ({route,navigation}) => {
       
         <Text style={styles.btntxt}>Delete</Text>
       </TouchableOpacity>
+
+      <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
+        <Text style={styles.textPrimary}>Delete?!</Text>
+        <Text style={styles.textSecondary}>
+          Are You Sure?
+        </Text>
+        <Button
+          title="Yes"
+          onPress={()=> {  toggleOverlay();deleteData();navigation.navigate("MyAds")}}
+        />
+      </Overlay>
       </View> 
        </ScrollView>
       </Card>
@@ -164,7 +184,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between'
 
-  } 
+  },
+
+  textPrimary: {
+    marginVertical: 20,
+    textAlign: 'center',
+    fontSize: 20,
+  },
+  textSecondary: {
+    marginBottom: 10,
+    textAlign: 'center',
+    fontSize: 17,
+    padding:20
+  },
 });
 
-export default EditAdScreen;
+export default MyAdDetails;

@@ -12,7 +12,7 @@ import { initializeApp } from "firebase/app";
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const FIREBASE_API_ENDPOINT = 'https://fir-2bf8d-default-rtdb.firebaseio.com/';
+const FIREBASE_API_ENDPOINT = 'https://moblail-default-rtdb.firebaseio.com/';
 
 var id;
 
@@ -36,9 +36,8 @@ const ProfileScreen = ({ navigation }) => {
     getid();
   }, []);
  
-  console.log("profile", id)
   const getData = async () => {
-    const response = await fetch(`${FIREBASE_API_ENDPOINT}/User.json`);
+    const response = await fetch(`${FIREBASE_API_ENDPOINT}/Users.json`);
     const data = await response.json();
 
    var keyValues = Object.keys(data);
