@@ -62,17 +62,9 @@ const getData = async () => {
         Userid: data[key].ID
       };
 
-     // console.log("Ider"+credential)
       arr.push(credential);
-      //arr.push(keyValues);
-      console.log("filter rzlr")
-      console.log(arr.filter(element => {
-        return element.Userid == id;
-      }))
+      console.log("filter rzlr",arr)
     }
-    //console.log("KeyValues"+keyValues);
-    //console.log("data"+data);
-    //console.log(arr);
     setProducts(arr.filter(element => {
       return element.Userid == id;
     }))

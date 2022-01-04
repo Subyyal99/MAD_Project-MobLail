@@ -156,7 +156,7 @@ const PostAd = ({navigation}) => {
         <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
         <Text style={styles.textPrimary}>Success!</Text>
         <Text style={styles.textSecondary}>
-          Your Ad was Posted
+          Posted Successfully.
         </Text>
         <Button
           title="Okay"

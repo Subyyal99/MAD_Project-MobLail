@@ -22,7 +22,6 @@ const MyAdDetails = ({route,navigation}) => {
       setVisible(!visible);
     };
   
-  //var id2=route.params.ID
 
    const deleteData = () => {
      
@@ -81,6 +80,17 @@ const MyAdDetails = ({route,navigation}) => {
         <Text style={[styles.txt1, {marginBottom:'5%'}]}>{route.params.Contact}</Text> 
         <Card.Divider /> 
        
+        <TouchableOpacity style = {styles.offer}
+       onPress={()=>{navigation.navigate("offer",{i:route.params.ID,
+        p:route.params.Price,b:route.params.Brand,d:route.params.Details,
+        c:route.params.Contact,m:route.params.Model})}}>
+        <Text style={{
+          fontSize:16,
+          color:'white',
+          fontWeight: "bold",
+        }}>
+        OFFERS</Text>
+        </TouchableOpacity>
         
      <View style = {styles.viewbtn}>
       <TouchableOpacity 
@@ -113,7 +123,7 @@ const MyAdDetails = ({route,navigation}) => {
       </TouchableOpacity>
 
       <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
-        <Text style={styles.textPrimary}>Delete?!</Text>
+        <Text style={styles.textPrimary}>Delete?</Text>
         <Text style={styles.textSecondary}>
           Are You Sure?
         </Text>
@@ -123,6 +133,8 @@ const MyAdDetails = ({route,navigation}) => {
         />
       </Overlay>
       </View> 
+      
+         
        </ScrollView>
       </Card>
      
@@ -155,7 +167,23 @@ const styles = StyleSheet.create({
    padding:5,
     flexDirection: 'row',
      height: 40,
-      margin: 2,
+      margin: 3,
+      
+  },
+  offer: {
+    alignItems: 'center', 
+    alignSelf: "center",  
+  borderRadius : 100,
+  borderWidth : 2,
+  borderColor:'green',
+  width: "65%",
+  backgroundColor: "black",
+     height: 40,
+     justifyContent:'center',
+     marginTop:'5%'
+
+   
+
   },
   btntxt: {
     fontSize:13,
@@ -175,7 +203,7 @@ const styles = StyleSheet.create({
         bottom:0,
         //width: "110%",
         //marginLeft:-12,
-        marginTop:'20%',
+        marginTop:'5%',
         justifyContent: 'center'
 
 

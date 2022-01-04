@@ -18,6 +18,7 @@ import adBrand from './components/AdBrands.js';
 import { userM, userM2 } from './components/UserManagement.js';
 import { adM, adM2 } from './components/AdManagement.js';
 import MyAds from './components/MyAds.js';
+import OfferScreen from './components/Offer.js';
 
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -132,6 +133,13 @@ function HomeStackScreen() {
         component={UpdateAd}
         options={{
           headerTitle: 'EDIT YOUR ADS',
+        }}
+      />
+      <HomeStack.Screen
+        name="offer"
+        component={OfferScreen}
+        options={{
+          headerTitle: 'OFFERS',
         }}
       />
     </HomeStack.Navigator>
