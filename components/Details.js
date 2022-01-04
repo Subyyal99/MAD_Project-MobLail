@@ -57,6 +57,8 @@ const Details = ({route}) => {
             resizeMode: 'contain',
             overflow: 'hidden',
           }}
+          source={{uri:myItem.Image}}
+          resizeMode="contain"
          
         />
         <Text style={{ fontSize: 25, fontWeight: 'bold',  alignself: 'center', }}>
@@ -65,7 +67,7 @@ const Details = ({route}) => {
         <Card.Divider />
         <View style= {styles.rowview}>
         <Text style={styles.txt1}>Price: </Text>
-        <Text style= {styles.txt1}>{myItem.Price}</Text>
+        <Text style= {styles.txt1}>Rs {myItem.Price}</Text>
         </View>
         <View style= {styles.rowview}>
         <Text style={styles.txt1}>Company:</Text>
@@ -128,7 +130,8 @@ const styles = StyleSheet.create({
  marginBottom: 15,
  borderRadius: 14,
  fontSize: 18,
- fontWeight: '500'
+ fontWeight: '500',
+ 
 
   },
   heading2: {
@@ -188,6 +191,11 @@ const styles = StyleSheet.create({
   marginTop: '5%',
 
   },
+  imgtxt : {
+    fontSize:15,
+    fontWeight: "bold",
+    color:"white"
+  }
 
 });
 

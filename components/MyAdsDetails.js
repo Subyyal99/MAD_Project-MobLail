@@ -51,7 +51,7 @@ const MyAdDetails = ({route,navigation}) => {
             resizeMode: 'contain',
             overflow: 'hidden',
           }}
-         source={{ uri: route.params.img }}
+         source={{ uri: route.params.Image }}
         />
         
         <Text style={{ fontSize: 25, fontWeight: 'bold',  alignself: 'center', }}>
@@ -60,7 +60,7 @@ const MyAdDetails = ({route,navigation}) => {
         <Card.Divider />
         <View style= {styles.rowview}>
         <Text style={styles.txt1}>Price:</Text>
-        <Text style= {styles.txt1}>{route.params.Price}</Text>
+        <Text style= {styles.txt1}>Rs {route.params.Price}</Text>
         </View>
         <View style= {styles.rowview}>
         <Text style={styles.txt1}>Company:</Text>
@@ -86,7 +86,7 @@ const MyAdDetails = ({route,navigation}) => {
       <TouchableOpacity 
        onPress={()=>{navigation.navigate("UpdateMyAds",{i:route.params.ID,
        p:route.params.Price,b:route.params.Brand,d:route.params.Details,
-       c:route.params.Contact,m:route.params.Model})}}
+       c:route.params.Contact,m:route.params.Model, img: route.params.Image})}}
       style={styles.tch2}>
       <Image
             source={{

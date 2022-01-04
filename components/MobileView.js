@@ -31,6 +31,7 @@ const getData = async () => {
     for (let i = 0; i < keyValues.length; i++) {
       let key = keyValues[i];
       let credential = {
+        Image: data[key].Image,
         Brand: data[key].Brand,
         Price: data[key].Price,
         Model: data[key].Model,
@@ -39,6 +40,7 @@ const getData = async () => {
         ID: key
       };
       arr.push(credential);
+      console.log("in mobile view", arr)
     }
     setProducts(arr)
   };
@@ -76,7 +78,7 @@ const getData = async () => {
             <Card containerStyle={styles.box}>
               <Card.Image
                 style={{ marginBottom:10, resizeMode:'contain', overflow:'hidden'}}
-                 source={require('../assets/pixel4.jpg')}
+                 source={{uri:item.Image}}
                   resizeMode="contain"
               />
               <Card.Divider />

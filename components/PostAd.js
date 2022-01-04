@@ -7,9 +7,12 @@ import {
 import { Text, Card, Button, Icon, Overlay } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 import { initializeApp } from "firebase/app";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const FIREBASE_API_ENDPOINT = 'https://moblail-default-rtdb.firebaseio.com/';
 
+var id;
 const PostAd = ({navigation}) => {
   const [image, setimage] = useState();
   const [price, setPrice] =useState();
@@ -19,23 +22,42 @@ const PostAd = ({navigation}) => {
   const [isSelected, setSelect] = useState('');
   const [number, setNumber] =useState();
   const [visible, setVisible] = useState(false);
+  //const [id, setid] = useState();
   
     const toggleOverlay = () => {
       setVisible(!visible);
     };
+
+    const getid = async () => {
+      try {
+        const jsonValue = await AsyncStorage.getItem('user')
+        const val=JSON.parse(jsonValue);
+        id = (val.id);
+        console.log("post ad id", id)
+       
+      } catch(e) {
+        // error reading value
+      }
+    }
+  
+    React.useEffect(() => {
+      getid();
+      //console.log("post ad id", id)
+    }, []);
   
   //FIREBASE POSTING
   const postData = () => {
     var requestOptions = {
       method: 'POST',
       body: JSON.stringify({
+        Image: image,
         Price: price,
         Brand: brand,
         Model: model,
         Details: detail,
-        Contact: number,
-        img: image,  
-        condtion: isSelected      
+        Contact: number, 
+        condtion: isSelected,
+        ID: id      
 
       }),
       
@@ -55,7 +77,9 @@ const PostAd = ({navigation}) => {
       return;
     }
     let pickerResult = await ImagePicker.launchImageLibraryAsync();
+    console.log(pickerResult.uri)
     setimage(pickerResult.uri)
+
     console.log(pickerResult);
    
   }
@@ -97,14 +121,14 @@ const PostAd = ({navigation}) => {
         <Text style = {styles.txt}> Model: </Text>
       <TextInput
           style={styles.input}
-          placeholder=' 2021'
+          placeholder=' Galaxy A3'
           onChangeText={(x)=>setModel(x)}
         />
         <Text style = {styles.txt}> Description: </Text>
       <TextInput
           style={styles.input}
           multiline={true}
-          placeholder=' Glass front (Gorilla Glass 5), glass back (Gorilla Glass 5), aluminum frame SIM	Single SIM (Nano-SIM) '
+          placeholder=' Very Good in Condition, 10/10 '
           onChangeText={(x)=>setDetail(x)}     
           />
         <Text style = {styles.txt}> Condition: </Text>

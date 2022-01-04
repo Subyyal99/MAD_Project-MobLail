@@ -16,7 +16,7 @@ const FIREBASE_API_ENDPOINT = 'https://moblail-default-rtdb.firebaseio.com/';
 
 const UpdateAd = ({navigation,route}) => {
  
-  const [image, setimage] = useState();
+  const [image, setimage] = useState(route.params.img);
   const [price, setPrice] =useState(route.params.p);
   const [brand, setBrand] =useState(route.params.b);
   const [model, setModel] =useState(route.params.m);
@@ -49,7 +49,8 @@ const [getD,setD] = useState();
         Brand: brand,
         Model: model,
         Details: detail,
-        Contact: number, 
+        Contact: number,
+        Image: image, 
       }),
     };
 

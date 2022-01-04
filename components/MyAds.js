@@ -14,13 +14,31 @@ import { Text, Card, Button, Icon } from 'react-native-elements';
 import { NavigationContainer } from '@react-navigation/native';
 
 import { initializeApp } from "firebase/app";
-
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const FIREBASE_API_ENDPOINT = 'https://moblail-default-rtdb.firebaseio.com/';
 
+var id;
+
 const MyAds = ({navigation}) => {
 const [products, setProducts] = React.useState();
+
+const getid = async () => {
+  try {
+    const jsonValue = await AsyncStorage.getItem('user')
+    const val=JSON.parse(jsonValue);
+    id = (val.id);
+    console.log("id", id)
+   
+  } catch(e) {
+    // error reading value
+  }
+}
+
+React.useEffect(() => {
+  getid();
+  //console.log("post ad id", id)
+}, []);
 
 const getData = async () => {
     const response = await fetch(`${FIREBASE_API_ENDPOINT}/ads.json`);
@@ -32,24 +50,32 @@ const getData = async () => {
 
     for (let i = 0; i < keyValues.length; i++) {
       let key = keyValues[i];
-      console.log(key);
+      //console.log(key);
       let credential = {
+        Image: data[key].Image,
         Brand: data[key].Brand,
         Price: data[key].Price,
         Model: data[key].Model,
         Details: data[key].Details,
         Contact: data[key].Contact,
-        ID: key
+        ID: key,
+        Userid: data[key].ID
       };
 
      // console.log("Ider"+credential)
       arr.push(credential);
       //arr.push(keyValues);
+      console.log("filter rzlr")
+      console.log(arr.filter(element => {
+        return element.Userid == id;
+      }))
     }
-    console.log("KeyValues"+keyValues);
+    //console.log("KeyValues"+keyValues);
     //console.log("data"+data);
-    console.log(arr);
-    setProducts(arr)
+    //console.log(arr);
+    setProducts(arr.filter(element => {
+      return element.Userid == id;
+    }))
   };
     
   React.useEffect(() => {
@@ -75,7 +101,7 @@ const getData = async () => {
             <Card containerStyle={styles.box}>
               <Card.Image
                 style={{ marginBottom:10, resizeMode:'contain', overflow:'hidden'}}
-                 source={require('../assets/pixel4.jpg')}
+                 source={{uri:item.Image}}
                   resizeMode="contain"
               />
               <Card.Divider />
